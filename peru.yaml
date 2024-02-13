@@ -1,0 +1,13 @@
+imports:
+    base-dev: ./desk
+
+git module base-dev:
+  url: https://github.com/urbit/urbit
+  move:
+    pkg/base-dev: main
+  export: main
+  pick:
+    - main/mar
+    - main/lib
+    - main/sur
+  rev: f0ae78db55362a306ee3cedd78f6e7c3b228f219

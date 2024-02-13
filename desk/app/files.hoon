@@ -3,7 +3,7 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 =files]
++$  state-0  [%0 files=node]
 +$  card  card:agent:gall
 --
 ::
@@ -31,25 +31,23 @@
   =+  !<(=do vase)
   ?-    do
       %add
-    ?>  ?=(~ `(unit file)`+:(~(fit of files) path.do))
-    =/  =file  [pub.do p.mime.do p.q.mime.do]
-    :_  this(files (~(put of files) path.do file))
-    :~  [%give /did %fact files-did+!>(`did`[%add path.do file])]
-        (make-entry:hc path.do pub.do mime.do)
-    ==
+    =/  fil=(unit file)
+      ?~  mime.do  ~
+      `[p.u.mime.do p.q.u.mime.do now.bowl]
+    =.  files  (need (~(put fi files) way.do perm.do fil))
+    :_  this
+    :-  [%give /did %fact files-did+!>(`did`[%all files])]
+    ?~  fil  ~
+    ~[(make-entry:hc path.do pub.do mime.do)]
   ::
       %del
-    =/  fis=(list [=path =node])  ~(tap of (~(dip of files) path.do))
+    =/  ways  (~(key by fi) way.do)
     =/  cards=(list card)
-      %+  murn  fis
-      |=  [=path =node]
-      ^-  (unit card)
-      ?:  ?=(%dir -.node)  ~
-      =?  path  ?=(^ path.do)  [i.path.do path]
-      [~ %pass path %arvo %e %set-response (cat 3 '/files' (spat path.do)) ~]
-    :_  this(files (~(lop of files) path.do))
+      (turn ways delete-entry:hc)
+    =.  files  (~(lop fi files) way.d)
+    :_  this
     :_  cards
-    [%give /did %fact files-did+!>(`did`[%del path.do])]
+    [%give /did %fact files-did+!>(`did`[%all files])]
   ::
       %pub
     =/  fis=(list [=path =node])  ~(tap of (~(dip of files) path.do))
@@ -71,13 +69,28 @@
 ++  on-fail   on-fail:def
 --
 ::
-|%
+|_  =bowl:gall
+++  make-url
+  |=  =way
+  ^-  @t
+  %+  rap  3
+  %+  join  '/'
+  :-  '/files'
+  %+  turn  way
+  |=  =cord
+  (crip (en-urlt:html (trip cord)))
+::
 ++  make-entry
-  |=  [=path pub=? =mime]
+  |=  [=way pub=? =mime]
   ^-  card
   =/  =cache-entry:eyre
     [pub %payload [200 ['Content-Type' (print-mime p.mime)]~] `q.mime]
-  [%pass path %arvo %e %set-response (cat 3 '/files' (spat path)) `cache-entry]
+  [%pass path %arvo %e %set-response (make-url way) `cache-entry]
+::
+++  delete-entry
+  |=  =way
+  ^-  card
+  [%pass path %arvo %e %set-response (make-url way) ~]
 ::
 ++  print-mime
   |=  =mite

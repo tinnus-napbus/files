@@ -1,13 +1,13 @@
 |%
 +$  do
-  $%  [%add =path perm=(unit ?) =mime]
-      [%del =path]
-      [%pub =path perm=(unit ?)]
+  $%  [%add =way perm=(unit ?) mime=(unit mime)]
+      [%del =way]
+      [%pub =way perm=(unit ?)]
   ==
 +$  did
-  $%  [%add =path =file]
-      [%del =path]
-      [%pub =path =pub]
+  $%  ::  [%add =way =file]
+      ::  [%del =way]
+      ::  [%pub =way =pub]
       [%all files=node]
   ==
 +$  file  [=mite size=@ud date=@da]
@@ -32,6 +32,40 @@
 ::
 ++  fi
   |_  fis=node
+  ::  delete subtree
+  ::
+  ++  lop
+    |=  =way
+    ^-  node
+    ?:  =(~ way)
+      *node
+    |-  ^-  node
+    ?>  ?=(^ way)
+    ?:  ?=(%& -.q.fis)
+      fis
+    ?~  got=(~(get by p.q.fis) i.way)
+      fis
+    ?~  t.way
+      fis(p.q (~(del by p.q.fis) i.way))
+    fis(p.q (~(put by p.q.fis) i.way $(fis u.got, way t.way)))
+  ::  delete file (not dir)
+  ::
+  ++  del
+    |=  =way
+    ^-  node
+    ?:  =(~ way)
+      fis
+    |-  ^-  node
+    ?>  ?=(^ way)
+    ?:  ?=(%& -.q.fis)
+      fis
+    ?~  got=(~(get by p.q.fis) i.way)
+      fis
+    ?~  t.way
+      ?:  ?=(%| -.q.u.got)
+        fis
+      fis(p.q (~(del by p.q.fis) i.way))
+    fis(p.q (~(put by p.q.fis) i.way $(fis u.got, way t.way)))
   ::  get unitised subtree
   ::
   ++  dip
@@ -42,6 +76,12 @@
     =/  kid  (~(get by p.q.fis) i.way)
     ?~  kid  ~
     $(fis u.kid, way t.way)
+  ::  does node (file or dir) exist?
+  ::
+  ++  has
+    |=  =way
+    ^-  ?
+    ?=(^ (dip way))
   ::  get unitised file at path
   ::
   ++  get
@@ -77,7 +117,7 @@
   ::  perm is either explicit or ~ for implicit
   ::
   ++  pro  ~
-  ::  add a new file
+  ::  add a new file or dir
   ::  if fil is null, it's an empty directory
   ++  put
     |=  [=way perm=(unit ?) fil=(unit file)]
