@@ -28,6 +28,16 @@
       $%  [%| p=(map @t node)]
           [%& p=file]
   ==  ==
+::  print a mime HTTP-style
+::
+++  print-mime
+  |=  =mite
+  ^-  @t
+  =/  =tape  (spud mite)
+  ?~  tape  ''
+  ?.  =('/' i.tape)
+    (crip tape)
+  (crip t.tape)
 ::  $node engine
 ::
 ++  fi
@@ -98,7 +108,7 @@
     |=  =way
     ^-  file
     (need (get way))
-  ::  calculate inherited permission at location
+  ::  hypothetical permission at location
   ::
   ++  per
     |=  =way

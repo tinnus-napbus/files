@@ -1,4 +1,5 @@
 /-  *files
+/+  dbug, default-agent
 |%
 +$  versioned-state
   $%  state-0
@@ -29,40 +30,32 @@
   ?>  =(our.bowl src.bowl)
   ?.  ?=(%files-do mark)  (on-poke:def mark vase)
   =+  !<(=do vase)
-  ?-    do
+  ?-    -.do
       %add
     =/  fil=(unit file)
       ?~  mime.do  ~
       `[p.u.mime.do p.q.u.mime.do now.bowl]
     =.  files  (need (~(put fi files) way.do perm.do fil))
+    =/  per=?  (~(per fi files) way.do)
     :_  this
-    :-  [%give /did %fact files-did+!>(`did`[%all files])]
-    ?~  fil  ~
-    ~[(make-entry:hc path.do pub.do mime.do)]
+    :-  [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+    ?~  mime.do  ~
+    ~[(make-entry:hc way.do per u.mime.do)]
   ::
       %del
-    =/  ways  (~(key by fi) way.do)
+    =/  ways  (~(key fi files) way.do)
     =/  cards=(list card)
       (turn ways delete-entry:hc)
-    =.  files  (~(lop fi files) way.d)
+    =.  files  (~(lop fi files) way.do)
     :_  this
     :_  cards
-    [%give /did %fact files-did+!>(`did`[%all files])]
+    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ::
-      %pub
-    =/  fis=(list [=path =node])  ~(tap of (~(dip of files) path.do))
-    
-
+      %pub  !!
   ==
 ::
-++  on-watch
-  |=  =path
-  ^-  (quip card _this)
-::
-++  on-arvo
-  |=  [=wire sign=sign-arvo]
-  ^-  (quip card _this)
-::
+++  on-watch  on-watch:def
+++  on-arvo   on-arvo:def
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def
 ++  on-leave  on-leave:def
@@ -80,25 +73,21 @@
   |=  =cord
   (crip (en-urlt:html (trip cord)))
 ::
+++  way-to-path
+  |=  =way
+  ^-  path
+  (turn way (cury scot %t))
+::
 ++  make-entry
   |=  [=way pub=? =mime]
   ^-  card
   =/  =cache-entry:eyre
     [pub %payload [200 ['Content-Type' (print-mime p.mime)]~] `q.mime]
-  [%pass path %arvo %e %set-response (make-url way) `cache-entry]
+  [%pass (way-to-path way) %arvo %e %set-response (make-url way) `cache-entry]
 ::
 ++  delete-entry
   |=  =way
   ^-  card
-  [%pass path %arvo %e %set-response (make-url way) ~]
-::
-++  print-mime
-  |=  =mite
-  ^-  @t
-  =/  =tape  (spud mite)
-  ?~  tape  ''
-  ?.  =('/' i.tape)
-    (crip tape)
-  (crip t.tape)
+  [%pass (way-to-path way) %arvo %e %set-response (make-url way) ~]
 --
 
