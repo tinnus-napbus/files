@@ -1,5 +1,6 @@
 |%
 +$  do
+nd
   $%  [%add =way perm=(unit ?) mime=(unit mime)]
       [%del =way]
       [%pub =way perm=(unit ?)]
@@ -109,6 +110,7 @@
     ^-  file
     (need (get way))
   ::  hypothetical permission at location
+  ::  or actual if explicit
   ::
   ++  per
     |=  =way
@@ -124,9 +126,34 @@
       perm
     $(way t.way, fis u.kid, perm pub.p.u.kid)
   ::  set and propagate permissions
-  ::  perm is either explicit or ~ for implicit
   ::
-  ++  pro  ~
+  ++  pro
+    |=  [=way perm=(unit ?)]
+    ^-  node
+    =/  =pub
+     ?^  perm
+       [%& u.perm]
+     [%| (per (snip way))]
+    |-
+    ?~  way
+      |-
+      ?:  ?=(%& -.q.fi)
+        fi(p pub)
+      %=  fi
+        p    pub
+        p.q  %-  ~(run by p.q.fi)
+             |=  f=node
+             ?:  exp.p.f
+               f
+             ?:  ?=(%& -.q.f)
+               f(pub.p pub.pub)
+             $(f
+      ==
+    ?:  ?=(%& -.q.fis)
+      fis
+    ?~  kid=(~(get by p.q.fis) i.way)
+      fis
+    fis(p.q (~(put by p.q.fis) i.way $(way t.way, fis u.kid)))
   ::  add a new file or dir
   ::  if fil is null, it's an empty directory
   ++  put
