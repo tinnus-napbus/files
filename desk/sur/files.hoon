@@ -1,6 +1,5 @@
 |%
 +$  do
-nd
   $%  [%add =way perm=(unit ?) mime=(unit mime)]
       [%del =way]
       [%pub =way perm=(unit ?)]
@@ -129,26 +128,28 @@ nd
   ::
   ++  pro
     |=  [=way perm=(unit ?)]
-    ^-  node
+    ^-  (quip ^way node)
     =/  =pub
      ?^  perm
        [%& u.perm]
      [%| (per (snip way))]
-    |-
+    |-  ^-  node
     ?~  way
-      |-
-      ?:  ?=(%& -.q.fi)
-        fi(p pub)
-      %=  fi
+      ?:  ?=(%& -.q.fis)
+        fis(p pub)
+      %=  fis
         p    pub
-        p.q  %-  ~(run by p.q.fi)
-             |=  f=node
-             ?:  exp.p.f
-               f
-             ?:  ?=(%& -.q.f)
-               f(pub.p pub.pub)
-             $(f
-      ==
+        p.q  %-  ~(run by p.q.fis)
+             |=  fi=node
+             ^-  node
+             ?:  exp.p.fi
+               fi
+             ?:  ?=(%& -.q.fi)
+               fi(pub.p pub.pub)
+             %=  fi
+               pub.p  pub.pub
+               p.q    (~(run by p.q.fi) |=(f=node ^$(fi f)))
+      ==     ==
     ?:  ?=(%& -.q.fis)
       fis
     ?~  kid=(~(get by p.q.fis) i.way)
@@ -156,6 +157,7 @@ nd
     fis(p.q (~(put by p.q.fis) i.way $(way t.way, fis u.kid)))
   ::  add a new file or dir
   ::  if fil is null, it's an empty directory
+  ::
   ++  put
     |=  [=way perm=(unit ?) fil=(unit file)]
     ^-  (unit node)
