@@ -34,7 +34,7 @@
       %add
     =/  fil=(unit file)
       ?~  mime.do  ~
-      `[p.u.mime.do p.q.u.mime.do now.bowl]
+      `[p.u.mime.do p.q.u.mime.do now.bowl ~]
     =.  files  (need (~(put fi files) way.do perm.do fil))
     =/  per=?  (~(per fi files) way.do)
     :_  this
@@ -51,11 +51,58 @@
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ::
-      %pub  !!
+      %pub
+    =.  files  (~(pro fi files) way.do perm.do)
+    =/  ways  (~(key fi files) way.do)
+    =/  cards=(list card)
+      %+  murn  ways
+      |=  =way
+      ^-  (unit card)
+      =/  =file  (~(got fi files) way)
+      ?~  aeon.file
+        ~
+      =+  .^  ent=cache-entry:eyre
+            %e
+            (scot %p our.bowl)
+            %$
+            (scot %da now.bowl)
+            %cache
+            (scot %ud u.aeon.file)
+            (scot %t (make-url:hc way))
+          ==
+      =/  per=?  (~(per fi files) way)
+      ?>  ?=(%payload -.body.ent)
+      ?~  data.simple-payload.body.ent
+        ~
+      =/  mim=mime
+        :-  mite.file
+        u.data.simple-payload.body.ent
+      (make-entry:hc way per mim)
+    :_  this
+    :_  cards
+    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ==
 ::
-++  on-watch  on-watch:def
-++  on-arvo   on-arvo:def
+++  on-arvo
+  |=  [=wire sign=sign-arvo]
+  ^-  (quip card _this)
+  ?.  ?=([%eyre %grow %cache @ @ ~] sign)
+    (on-arvo:def wire sign)
+  =/  rev=@   (slav %ud i.t.path.sign)
+  =/  =way  (path-to-way:hc wire)
+  ?~  got=(~(get fi files) way)
+    `this
+  =.  files  (~(del fi files) way)
+  =.  files  (need (~(put fi files) way ~ u.got(aeon `rev)))
+  `this
+::
+++  on-watch
+  |=  =path
+  ^-  (quip card _this)
+  ?>  =(src.bowl our.bowl)
+  :_  this
+  [%give %fact ~ files-did+!>(`did`[%all files])]~
+::
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def
 ++  on-leave  on-leave:def
@@ -72,6 +119,11 @@
   %+  turn  way
   |=  =cord
   (crip (en-urlt:html (trip cord)))
+::
+++  path-to-way
+  |=  =path
+  ^-  way
+  (turn path (cury slav %t))
 ::
 ++  way-to-path
   |=  =way

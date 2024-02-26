@@ -10,7 +10,7 @@
       ::  [%pub =way =pub]
       [%all files=node]
   ==
-+$  file  [=mite size=@ud date=@da]
++$  file  [=mite size=@ud date=@da aeon=(unit @)]
 ::  public or private, where exp is explicit/implicit
 ::
 +$  pub  [exp=_| pub=_|]
@@ -128,7 +128,7 @@
   ::
   ++  pro
     |=  [=way perm=(unit ?)]
-    ^-  (quip ^way node)
+    ^-  node
     =/  =pub
      ?^  perm
        [%& u.perm]
