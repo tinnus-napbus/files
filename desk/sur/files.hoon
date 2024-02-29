@@ -1,6 +1,6 @@
 |%
 +$  do
-  $%  [%add =way perm=(unit ?) mime=(unit mime)]
+  $%  [%dir =way perm=(unit ?)]
       [%del =way]
       [%pub =way perm=(unit ?)]
   ==
