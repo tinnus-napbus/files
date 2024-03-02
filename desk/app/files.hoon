@@ -17,12 +17,17 @@
 +*  this  .
     def   ~(. (default-agent this %.n) bowl)
     hc    ~(. +> bowl)
-++  on-init  on-init:def
+++  on-init
+  ^-  (quip card _this)
+  :_  this
+  [%pass /bind %arvo %e %connect `/files-upload %files]~
+::
 ++  on-save  !>(state)
+::
 ++  on-load
   |=  old-vase=vase
   ^-  (quip card _this)
-  [~ this(state !<(state-0 old-vase))]
+  `this(state !<(state-0 old-vase))
 ::
 ++  on-poke
   |=  [=mark =vase]
@@ -42,8 +47,8 @@
       %+  fall
         (get-header:http 'content-type' header-list.request.q.req)
       'application/octet-stream'
-    =/  fil=file
-      [mite p.u.body.request.q.req now.bowl ~]
+    =/  =mime  [mite u.body.request.q.req]
+    =/  fil=file  [mime now.bowl]
     =/  fis=(unit node)  (~(put fi files) way ~ `fil)
     ?~  fis
       :_  this
@@ -54,7 +59,7 @@
     =/  per=?  (~(per fi u.fis) way)
     :_  this(files u.fis)
     :*  [%give %fact ~[/did] files-did+!>(`did`[%all u.fis])]
-        (make-entry:hc way per mite u.body.request.q.req)
+        (make-entry:hc way per mime)
         %:  response:hc
           p.req  201
           ['Location' (make-url:hc way)]~
@@ -82,29 +87,12 @@
     =.  files  (~(pro fi files) way.do perm.do)
     =/  ways  (~(key fi files) way.do)
     =/  cards=(list card)
-      %+  murn  ways
+      %+  turn  ways
       |=  =way
-      ^-  (unit card)
+      ^-  card
       =/  =file  (~(got fi files) way)
-      ?~  aeon.file
-        ~
-      =+  .^  ent=cache-entry:eyre
-            %e
-            (scot %p our.bowl)
-            %$
-            (scot %da now.bowl)
-            %cache
-            (scot %ud u.aeon.file)
-            (scot %t (make-url:hc way))
-          ==
       =/  per=?  (~(per fi files) way)
-      ?>  ?=(%payload -.body.ent)
-      ?~  data.simple-payload.body.ent
-        ~
-      =/  mim=mime
-        :-  mite.file
-        u.data.simple-payload.body.ent
-      `(make-entry:hc way per mim)
+      (make-entry:hc way per mime.file)
     :_  this
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
@@ -113,27 +101,26 @@
 ++  on-arvo
   |=  [=wire sign=sign-arvo]
   ^-  (quip card _this)
-  ?.  ?=([%eyre %grow %cache @ @ ~] sign)
+  ?.  ?=([%bind ~] wire)
     (on-arvo:def wire sign)
-  =/  rev=@   (slav %ud i.t.path.sign)
-  =/  =way  (path-to-way:hc wire)
-  ?~  got=(~(get fi files) way)
-    `this
-  =/  per=(unit ?)
-    =/  kid=node  (need (~(dip fi files) way))
-    ?.  exp.p.kid
-      ~
-    `pub.p.kid
-  =.  files  (~(del fi files) way)
-  =.  files  (need (~(put fi files) way per `u.got(aeon `rev)))
+  ?.  ?=([%eyre %bound *] sign-arvo)
+    (on-arvo:def wire sign)
+  ~?  !accepted.sign-arvo
+    %eyre-rejected-files-binding
   `this
 ::
 ++  on-watch
   |=  =path
   ^-  (quip card _this)
   ?>  =(src.bowl our.bowl)
-  :_  this
-  [%give %fact ~ files-did+!>(`did`[%all files])]~
+  ?+    path  (on-watch:def path)
+      [%http-response *]
+    `this
+  ::
+      [%did ~]
+    :_  this
+    [%give %fact ~ files-did+!>(`did`[%all files])]~
+  ==
 ::
 ++  on-peek   on-peek:def
 ++  on-agent  on-agent:def
@@ -180,9 +167,9 @@
   (turn path (cury slav %t))
 ::
 ++  way-to-path
-  |=  =way
-  ^-  path
-  (turn way (cury scot %t))
+|=  way=(list @t)
+^-  path
+(turn way (cury scot %t))
 ::
 ++  make-entry
   |=  [=way pub=? =mime]

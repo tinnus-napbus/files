@@ -10,7 +10,7 @@
       ::  [%pub =way =pub]
       [%all files=node]
   ==
-+$  file  [=mite size=@ud date=@da aeon=(unit @)]
++$  file  [=mime date=@da]
 ::  public or private, where exp is explicit/implicit
 ::
 +$  pub  [exp=_| pub=_|]
@@ -109,7 +109,7 @@
     ^-  file
     (need (get way))
   ::  hypothetical permission at location
-  ::  or actual if explicit
+  ::  or actual if it exists
   ::
   ++  per
     |=  =way

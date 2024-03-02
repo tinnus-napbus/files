@@ -4,19 +4,12 @@
 ++  grab
   |%
   ++  noun  do
+  ++  json  de-json
   --
 ++  grow
   |%
   ++  noun  du
-  ++  json
-    %-  of
-    :~  [%add 
-        [%del
-        [%pub
-    ==
   --
 ++  grad  %noun
 --
-
-
 
