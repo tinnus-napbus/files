@@ -37,7 +37,7 @@
     =/  req  !<  (pair @ta inbound-request:eyre)  vase
     ?.  =('POST' method.request.q.req)
       :_  this
-      (response:hc p.req 405 ['Allow' 'POST']~ '405 Method not allowed')
+      (response:hc p.req 405 ['Allow' 'POST']~ 'Method not allowed')
     =/  =way  (decode-url:hc '/files-upload/' url.request.q.req)
     ?~  body.request.q.req
       :_  this
