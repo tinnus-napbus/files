@@ -41,7 +41,7 @@
     =/  =way  (decode-url:hc '/files-upload/' url.request.q.req)
     ?~  body.request.q.req
       :_  this
-      (response:hc p.req 400 ~ '400 Bad Request: Body empty>')
+      (response:hc p.req 400 ~ 'Body empty')
     =/  =mite
       %-  parse-mime:hc
       %+  fall
@@ -54,7 +54,7 @@
       :_  this
       %:  response:hc
         p.req  422  ~
-        '422 Unprocessable entity: Cannot add file at location'
+        'Cannot add file at location'
       ==
     =/  per=?  (~(per fi u.fis) way)
     :_  this(files u.fis)
@@ -63,7 +63,7 @@
         %:  response:hc
           p.req  201
           ['Location' (make-url:hc way)]~
-          '201 Created: Success'
+          'Success'
         ==
     ==
   ?.  ?=(%files-do mark)  (on-poke:def mark vase)
