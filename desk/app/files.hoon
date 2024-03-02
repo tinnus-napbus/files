@@ -139,6 +139,11 @@
   ++  part  (cook crip (star ;~(pose aln hep dot)))
   --
 ::
+++  filename
+  |=  =way
+  ^-  tape
+  (en-urlt:html (trip (rear way)))
+::
 ++  make-url
   |=  =way
   ^-  @t
@@ -174,8 +179,12 @@
 ++  make-entry
   |=  [=way pub=? =mime]
   ^-  card
+  =/  hed=header-list:http
+    :~  ['Content-Type' (print-mime p.mime)]
+        ['Content-Disposition' (crip "inline;filename=\"{(filename way)}\"")]
+    ==
   =/  =cache-entry:eyre
-    [!pub %payload [200 ['Content-Type' (print-mime p.mime)]~] `q.mime]
+    [!pub %payload [200 hed] `q.mime]
   [%pass (way-to-path way) %arvo %e %set-response (make-url way) `cache-entry]
 ::
 ++  delete-entry
