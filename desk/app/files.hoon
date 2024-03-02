@@ -103,9 +103,9 @@
   ^-  (quip card _this)
   ?.  ?=([%bind ~] wire)
     (on-arvo:def wire sign)
-  ?.  ?=([%eyre %bound *] sign-arvo)
+  ?.  ?=([%eyre %bound *] sign)
     (on-arvo:def wire sign)
-  ~?  !accepted.sign-arvo
+  ~?  !accepted.sign
     %eyre-rejected-files-binding
   `this
 ::
@@ -175,7 +175,7 @@
   |=  [=way pub=? =mime]
   ^-  card
   =/  =cache-entry:eyre
-    [pub %payload [200 ['Content-Type' (print-mime p.mime)]~] `q.mime]
+    [!pub %payload [200 ['Content-Type' (print-mime p.mime)]~] `q.mime]
   [%pass (way-to-path way) %arvo %e %set-response (make-url way) `cache-entry]
 ::
 ++  delete-entry
