@@ -122,7 +122,22 @@
     [%give %fact ~ files-did+!>(`did`[%all files])]~
   ==
 ::
-++  on-peek   on-peek:def
+++  on-peek
+  |=  =path
+  ^-  (unit (unit cage))
+  ?+    path  (on-peek:def path)
+      [%x %dbug %state ~]
+    :^  ~  ~  %noun
+    !>
+    %=  state
+        files
+      |-  ^-  node
+      ?:  ?=(%& -.q.files)
+        files(q.q.mime.p.q 1.337)
+      files(p.q (~(run by p.q.files) |=(=node ^$(files node))))
+    ==
+  ==
+::
 ++  on-agent  on-agent:def
 ++  on-leave  on-leave:def
 ++  on-fail   on-fail:def
