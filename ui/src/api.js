@@ -37,4 +37,14 @@ export async function download(slugs) {
   });
 }
 
+export function dir(slugs) {
+  return api.poke({
+    app: api.desk,
+    mark: "files-do",
+    json: { dir: { way: slugs, perm: false } },
+    onError: () => console.log("mkdir error"),
+    onSuccess: () => console.log("mkdir success"),
+  });
+}
+
 export default api;
