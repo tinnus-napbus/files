@@ -1,3 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Urbit Sans";
+  src: url("https://media.urbit.org/fonts/UrbitSans/UrbitSansVFWeb-Regular.woff2")
+       format("woff2");
+  font-weight: 100 700;
+  font-style: normal;
+}
+
+:root {
+  --black: #14140F;
+  --white: #FAFAFC;
+  --lite: #E8EBEE;
+  --gray: #D6D8DD;
+  --tint: #C3C8CD;
+  --brite: #9CD0FF;
+  --danger: #FF0000;
+}
+
+html,
+body {
+  font-family: "Urbit Sans";
+  @apply bg-gray text-black;
+}
