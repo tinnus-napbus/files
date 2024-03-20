@@ -47,4 +47,14 @@ export function dir(slugs) {
   });
 }
 
+export function del(slugs) {
+  return api.poke({
+    app: api.desk,
+    mark: "files-do",
+    json: { del: { way: slugs } },
+    onError: () => console.log("del error"),
+    onSuccess: () => console.log("del success"),
+  });
+}
+
 export default api;
