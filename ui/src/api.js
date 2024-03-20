@@ -21,4 +21,20 @@ export async function upload(slugs, file) {
   });
 }
 
+export async function download(slugs) {
+  return await axios.get(slugs, {
+    headers: {
+      Accept: "*",
+    },
+    onUploadProgress: (progressEvent) => {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
+      console.log(progress);
+    },
+    onDownloadProgress: (progressEvent) => {
+      const progress = (progressEvent.loaded / progressEvent.total) * 100;
+      console.log(progress);
+    },
+  });
+}
+
 export default api;
