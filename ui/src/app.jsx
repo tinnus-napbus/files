@@ -175,7 +175,7 @@ function Files() {
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-white rounded-t-3xl p-0.5 space-y-0.5">
+        <div className="flex-1 bg-white rounded-t-3xl p-0.5 space-y-0.5 overflow-y-auto">
           {action === "mkdir" && (
             <NewDir slugs={slugs} callback={() => setAction(null)} />
           )}
