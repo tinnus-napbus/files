@@ -4,22 +4,104 @@ import {
   Routes,
   Route,
   Link,
+  Navigate,
   useLocation,
   useSearchParams,
 } from "react-router-dom";
-import api from "/src/api";
+import api, { dir } from "/src/api";
 import Search from "/src/components/Search";
 import Upload from "/src/components/Upload";
-import { NewFolderIcon, UploadIcon } from "/src/icons";
+import { File, Folder, NewFolderIcon, UploadIcon } from "/src/icons";
+
+function Dir({ name, path, perm }) {
+  return (
+    <Link className="h-[2em] w-full pill !px-6 bg-lite" to={path.join("/")}>
+      <div className="inline-flex h-full items-center">
+        <Folder className="h-1/2 mr-[0.25em]" />
+        {name}
+      </div>
+    </Link>
+  );
+}
+
+function Fil({ name, path, mime, date, size, perm }) {
+  return (
+    <div className="h-[2em] w-full pill !px-6 bg-lite">
+      <div className="inline-flex h-full items-center">
+        <File className="h-1/2 mr-[0.25em]" />
+        {name}
+      </div>
+    </div>
+  );
+}
+
+function Path({ slugs }) {
+  let crumbs = [];
+  slugs.forEach((slug, i) => {
+    crumbs.push(<span>/</span>);
+    crumbs.push(<Link to={slugs.slice(0, i + 1).join("/")}>{slug}</Link>);
+  });
+
+  return (
+    <div className="text-lg space-x-1.5">
+      <Link className="pill bg-tint" to="">
+        ~{api.ship}
+      </Link>
+      {...crumbs}
+    </div>
+  );
+}
 
 function Files() {
   const [fileTree, setFileTree] = useState({});
 
   const path = decodeURIComponent(useLocation().pathname);
-  const slugs = path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
+  const slugs =
+    path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
 
   const [searchParams] = useSearchParams();
   const [searchQuery] = searchParams.getAll("search");
+
+  const assoc = (o, k, v) => {
+    const res = { ...o };
+    res[k] = v;
+    return res;
+  };
+
+  const dissoc = (o, k) => {
+    const res = { ...o };
+    delete res[k];
+    return res;
+  };
+
+  const flattenFiles = ({ dir }) => {
+    const { name, path, contents, perm } = dir || {};
+    if (contents) {
+      return [
+        dissoc(assoc(dir, "type", "dir"), "contents"),
+        ...contents
+          .filter((o) => "fil" in o)
+          .map((o) => assoc(o.fil, "type", "fil")),
+        ...contents
+          .filter((o) => "dir" in o)
+          .map((d) => flattenFiles(d))
+          .flat(),
+      ];
+    } else {
+      return [];
+    }
+  };
+
+  const flatAllFiles = flattenFiles(fileTree);
+  const flatFiles = flatAllFiles.filter((o) => {
+    return (
+      o.path.length > 0 &&
+      (searchQuery || o.path.slice(0, -1).join("/") === slugs.join("/")) &&
+      (!searchQuery || o.name.includes(searchQuery || ""))
+    );
+  });
+  const flatFils = flatFiles.filter((o) => o.type === "fil");
+  const flatDirs = flatFiles.filter((o) => o.type === "dir");
 
   useEffect(() => {
     const id = api.subscribe({
@@ -48,14 +130,12 @@ function Files() {
         <div className="flex items-center h-[2em] w-full gap-5">
           <Search className="h-full w-1/3" />
           <div className="flex-1 flex justify-between items-center">
-            <div className="text-lg space-x-1.5">
-              <Link className="pill bg-tint" to="">
-                ~{api.ship}
-              </Link>
-              <span>/</span>
-            </div>
+            <Path slugs={slugs} />
             <div className="h-full space-x-1.5">
-              <button className="inline-flex justify-center items-center h-[2em] w-[2em] rounded-full bg-white text-black">
+              <button
+                className="inline-flex justify-center items-center h-[2em] w-[2em] rounded-full bg-white text-black"
+                /* onClick={() => dir(["hala", "bala"])} */
+              >
                 <NewFolderIcon className="h-1/2" />
               </button>
               <Upload
@@ -68,7 +148,14 @@ function Files() {
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-white rounded-t-3xl p-0.5 space-y-0.5"></div>
+        <div className="flex-1 bg-white rounded-t-3xl p-0.5 space-y-0.5">
+          {flatDirs.map((props) => (
+            <Dir key={props.path.join("/")} {...props} />
+          ))}
+          {flatFils.map((props) => (
+            <Fil key={props.path.join("/")} {...props} />
+          ))}
+        </div>
       </div>
     </main>
   );
