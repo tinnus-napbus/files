@@ -130,7 +130,6 @@ function Files() {
             <div className="h-full space-x-1.5">
               <button
                 className="inline-flex justify-center items-center h-[2em] w-[2em] rounded-full bg-white text-black"
-                /* onClick={() => dir(["hala", "bala"])} */
               >
                 <NewFolderIcon className="h-1/2" />
               </button>
