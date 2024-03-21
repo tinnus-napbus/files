@@ -25,3 +25,9 @@ body {
   font-family: "Urbit Sans";
   @apply bg-gray text-black;
 }
+
+.pill {
+  @apply inline-flex items-center whitespace-nowrap;
+  padding: 0.2em 0.6em;
+  border-radius: 9999px;
+}
