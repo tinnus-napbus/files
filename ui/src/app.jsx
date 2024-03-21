@@ -6,7 +6,6 @@ import {
   Link,
   Navigate,
   useLocation,
-  useSearchParams,
 } from "react-router-dom";
 import api, { dir } from "/src/api";
 import Search from "/src/components/Search";
@@ -54,13 +53,10 @@ function Path({ slugs }) {
 
 function Files() {
   const [fileTree, setFileTree] = useState({});
+  const [query, setQuery] = useState(null);
 
   const path = decodeURIComponent(useLocation().pathname);
-  const slugs =
-    path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
-
-  const [searchParams] = useSearchParams();
-  const [searchQuery] = searchParams.getAll("search");
+  const slugs = path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
 
   const assoc = (o, k, v) => {
     const res = { ...o };
@@ -96,8 +92,8 @@ function Files() {
   const flatFiles = flatAllFiles.filter((o) => {
     return (
       o.path.length > 0 &&
-      (searchQuery || o.path.slice(0, -1).join("/") === slugs.join("/")) &&
-      (!searchQuery || o.name.includes(searchQuery || ""))
+      (query || o.path.slice(0, -1).join("/") === slugs.join("/")) &&
+      (!query || o.name.includes(query || ""))
     );
   });
   const flatFils = flatFiles.filter((o) => o.type === "fil");
@@ -128,7 +124,7 @@ function Files() {
       </div>
       <div className="flex-1 flex flex-col gap-1.5">
         <div className="flex items-center h-[2em] w-full gap-5">
-          <Search className="h-full w-1/3" />
+          <Search className="h-full w-1/3" search={setQuery} />
           <div className="flex-1 flex justify-between items-center">
             <Path slugs={slugs} />
             <div className="h-full space-x-1.5">
