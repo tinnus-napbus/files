@@ -7,8 +7,9 @@ export default function Upload({ className = "", children, slugs = [] }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const file = fileRef.current.files[0];
-    upload(slugs.concat(file.name), file);
+    Array.from(fileRef.current.files).forEach((file) => {
+      upload(slugs.concat(file.name), file);
+    });
   };
 
   return (
