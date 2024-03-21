@@ -31,3 +31,7 @@ body {
   padding: 0.2em 0.6em;
   border-radius: 9999px;
 }
+
+.btn {
+  @apply pill justify-center font-light w-min;
+ }
