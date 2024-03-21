@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -20,6 +20,36 @@ function Dir({ name, path, perm }) {
         {name}
       </div>
     </Link>
+  );
+}
+
+function NewDir({ slugs, callback }) {
+  const nameRef = useRef(null);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dir(slugs.concat(nameRef.current.value));
+    callback();
+    return false;
+  };
+
+  return (
+    <div className="h-[2em] w-full pill !px-6 bg-lite justify-between">
+      <div className="inline-flex h-full items-center">
+        <Folder className="h-1/2 mr-[0.25em]" />
+        <form onSubmit={onSubmit}>
+          <input
+            className="bg-lite focus:outline-0"
+            ref={nameRef}
+            type="text"
+            defaultValue={"New Folder"}
+            onFocus={(e) => e.target.select()}
+            onBlur={(e) => callback()}
+            autoFocus
+          />
+        </form>
+      </div>
+    </div>
   );
 }
 
@@ -54,6 +84,7 @@ function Path({ slugs }) {
 function Files() {
   const [fileTree, setFileTree] = useState({});
   const [query, setQuery] = useState(null);
+  const [action, setAction] = useState(null);
 
   const path = decodeURIComponent(useLocation().pathname);
   const slugs = path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
@@ -130,6 +161,7 @@ function Files() {
             <div className="h-full space-x-1.5">
               <button
                 className="inline-flex justify-center items-center h-[2em] w-[2em] rounded-full bg-white text-black"
+                onClick={(e) => setAction("mkdir")}
               >
                 <NewFolderIcon className="h-1/2" />
               </button>
@@ -144,6 +176,9 @@ function Files() {
           </div>
         </div>
         <div className="flex-1 bg-white rounded-t-3xl p-0.5 space-y-0.5">
+          {action === "mkdir" && (
+            <NewDir slugs={slugs} callback={() => setAction(null)} />
+          )}
           {flatDirs.map((props) => (
             <Dir key={props.path.join("/")} {...props} />
           ))}
