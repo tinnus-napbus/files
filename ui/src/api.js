@@ -4,7 +4,7 @@ import axios from "axios";
 const api = new Urbit("", "", window.desk || "files");
 api.ship = window.ship;
 
-export async function upload(slugs, file) {
+export async function upload(slugs, file, onProgress, onDone) {
   await axios.post(`/files-upload/${slugs.join("/")}`, file, {
     headers: {
       Accept: "application/json",
@@ -12,11 +12,11 @@ export async function upload(slugs, file) {
     },
     onUploadProgress: (progressEvent) => {
       const progress = (progressEvent.loaded / progressEvent.total) * 100;
-      console.log(progress);
+      onProgress(progress);
     },
     onDownloadProgress: (progressEvent) => {
       const progress = (progressEvent.loaded / progressEvent.total) * 100;
-      console.log(progress);
+      if (progress === 100) onDone();
     },
   });
 }

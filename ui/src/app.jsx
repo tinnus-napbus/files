@@ -64,6 +64,24 @@ function Fil({ name, path, mime, date, size, perm }) {
   );
 }
 
+function UploadFile({ name, type, progress }) {
+  return (
+    <div className="relative h-[2em] w-full pill !pl-6 !pr-0.5 !py-0.5 bg-lite justify-between">
+      <div
+        className="absolute left-0 top-0 h-full bg-tint rounded-full"
+        style={{ width: `${progress}%` }}
+      />
+      <div className="z-10 inline-flex h-full items-center">
+        <File className="h-1/2 mr-[0.25em]" />
+        {name}
+      </div>
+      <div className="z-10 flex justify-center items-center h-full aspect-square bg-white text-lg rounded-full">
+        {progress}%
+      </div>
+    </div>
+  );
+}
+
 function Path({ slugs }) {
   let crumbs = [];
   slugs.forEach((slug, i) => {
@@ -85,6 +103,12 @@ function Files() {
   const [fileTree, setFileTree] = useState({});
   const [query, setQuery] = useState(null);
   const [action, setAction] = useState(null);
+
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const uploadFilesRef = useRef(uploadFiles);
+  useEffect(() => {
+    uploadFilesRef.current.value = uploadFiles;
+  }, [uploadFiles]);
 
   const path = decodeURIComponent(useLocation().pathname);
   const slugs = path !== "/" ? path.replace(/^\/|\/$/g, "").split("/") : [];
@@ -168,6 +192,27 @@ function Files() {
               <Upload
                 className="h-[2em] pill bg-brite text-white cursor-pointer"
                 slugs={slugs}
+                addUploadFiles={(files) =>
+                  setUploadFiles(
+                    (uploadFilesRef.current.value || []).concat(...files)
+                  )
+                }
+                updateProgress={(path, progress) => {
+                  let updatedFiles = [...uploadFilesRef.current.value];
+                  const updateIndex = updatedFiles.findIndex(
+                    (file) => file.path === path
+                  );
+                  updatedFiles[updateIndex].progress = progress;
+                  setUploadFiles(updatedFiles);
+                }}
+                uploadDone={(path) => {
+                  let updatedFiles = [...uploadFilesRef.current.value];
+                  const delIndex = updatedFiles.findIndex(
+                    (file) => file.path === path
+                  );
+                  updatedFiles.splice(delIndex, 1);
+                  setUploadFiles(updatedFiles);
+                }}
               >
                 <UploadIcon className="h-1/2 mr-[0.25em]" />
                 Upload
@@ -179,6 +224,10 @@ function Files() {
           {action === "mkdir" && (
             <NewDir slugs={slugs} callback={() => setAction(null)} />
           )}
+          {uploadFiles.length > 0 &&
+            uploadFiles.map((props) => (
+              <UploadFile key={props.path} {...props} />
+            ))}
           {flatDirs.map((props) => (
             <Dir key={props.path.join("/")} {...props} />
           ))}
