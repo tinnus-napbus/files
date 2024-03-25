@@ -13,17 +13,6 @@ import Search from "/src/components/Search";
 import Upload from "/src/components/Upload";
 import { FileIcon, FolderIcon, NewFolderIcon, UploadIcon } from "/src/icons";
 
-function Dir({ name, path, perm }) {
-  return (
-    <Link className="h-[2em] w-full pill !px-6 bg-lite" to={path.join("/")}>
-      <div className="inline-flex h-full items-center">
-        <FolderIcon className="h-1/2 mr-[0.25em]" />
-        {name}
-      </div>
-    </Link>
-  );
-}
-
 function NewDir({ slugs, callback }) {
   const nameRef = useRef(null);
 
@@ -219,7 +208,7 @@ function Files() {
               <UploadFile key={props.path} {...props} />
             ))}
           {flatDirs.map((props) => (
-            <Dir key={props.path.join("/")} {...props} />
+            <Item key={props.path.join("/")} {...props} />
           ))}
           {flatFils.map((props) => (
             <Item key={props.path.join("/")} {...props} />

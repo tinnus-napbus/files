@@ -1,12 +1,39 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   BinIcon,
   CopyIcon,
   CrossIcon,
   DownloadIcon,
   FileIcon,
+  FolderIcon,
   WebIcon,
 } from "/src/icons";
+
+function Wrapper({ children, path, mime, onMouseEnter, onMouseLeave }) {
+  if (!mime) {
+    return (
+      <Link
+        className="item justify-between"
+        to={path.join("/")}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {children}
+      </Link>
+    );
+  } else {
+    return (
+      <div
+        className="item justify-between cursor-default"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {children}
+      </div>
+    );
+  }
+}
 
 function Button({ className, children, onClick, visible = true }) {
   return (
@@ -14,7 +41,10 @@ function Button({ className, children, onClick, visible = true }) {
       className={`${
         visible ? "" : "hidden "
       }flex justify-center items-center h-full aspect-square font-mono rounded-full ${className}`}
-      onClick={onClick}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick();
+      }}
     >
       {children}
     </button>
@@ -26,13 +56,18 @@ export default function Item({ name, path, mime, date, size, perm }) {
   const [hover, setHover] = useState(false);
 
   return (
-    <div
-      className="item justify-between cursor-default"
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+    <Wrapper
+      {...{
+        path,
+        mime,
+        onMouseEnter: () => setHover(true),
+        onMouseLeave: () => setHover(false),
+      }}
     >
       <div className="inline-flex flex-1 h-full items-center">
-        <FileIcon className="h-1/2 mr-[0.25em]" />
+        {(!mime && <FolderIcon className="h-1/2 mr-[0.25em]" />) || (
+          <FileIcon className="h-1/2 mr-[0.25em]" />
+        )}
         {name}
       </div>
       <div className="flex h-full space-x-1.5">
@@ -71,6 +106,6 @@ export default function Item({ name, path, mime, date, size, perm }) {
           {expand ? <CrossIcon className="h-1/3" /> : "i"}
         </Button>
       </div>
-    </div>
+    </Wrapper>
   );
 }
