@@ -34,12 +34,12 @@ function NewDir({ slugs, callback }) {
   };
 
   return (
-    <div className="h-[2em] w-full pill !px-6 bg-lite justify-between">
+    <div className="h-[2em] w-full pill !px-6 bg-tint justify-between">
       <div className="inline-flex h-full items-center">
         <Folder className="h-1/2 mr-[0.25em]" />
         <form onSubmit={onSubmit}>
           <input
-            className="bg-lite focus:outline-0"
+            className="bg-transparent focus:outline-0"
             ref={nameRef}
             type="text"
             defaultValue={"New Folder"}
