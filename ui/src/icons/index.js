@@ -1,5 +1,10 @@
+export { default as BinIcon } from "./Bin";
+export { default as CopyIcon } from "./Copy";
+export { default as CrossIcon } from "./Cross";
+export { default as DownloadIcon } from "./Download";
 export { default as FileIcon } from "./File";
 export { default as FolderIcon } from "./Folder";
 export { default as NewFolderIcon } from "./NewFolder";
 export { default as SearchIcon } from "./Search";
 export { default as UploadIcon } from "./Upload";
+export { default as WebIcon } from "./Web";

@@ -8,6 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import api, { dir } from "/src/api";
+import Item from "/src/components/Item";
 import Search from "/src/components/Search";
 import Upload from "/src/components/Upload";
 import { FileIcon, FolderIcon, NewFolderIcon, UploadIcon } from "/src/icons";
@@ -53,20 +54,9 @@ function NewDir({ slugs, callback }) {
   );
 }
 
-function Fil({ name, path, mime, date, size, perm }) {
-  return (
-    <div className="h-[2em] w-full pill !px-6 bg-lite">
-      <div className="inline-flex h-full items-center">
-        <FileIcon className="h-1/2 mr-[0.25em]" />
-        {name}
-      </div>
-    </div>
-  );
-}
-
 function UploadFile({ name, type, progress }) {
   return (
-    <div className="relative h-[2em] w-full pill !pl-6 !pr-0.5 !py-0.5 bg-lite justify-between">
+    <div className="relative h-[2em] w-full pill !pl-6 !pr-0.5 !py-0.5 bg-lite justify-between cursor-default">
       <div
         className="absolute left-0 top-0 h-full bg-tint rounded-full"
         style={{ width: `${progress}%` }}
@@ -232,7 +222,7 @@ function Files() {
             <Dir key={props.path.join("/")} {...props} />
           ))}
           {flatFils.map((props) => (
-            <Fil key={props.path.join("/")} {...props} />
+            <Item key={props.path.join("/")} {...props} />
           ))}
         </div>
       </div>

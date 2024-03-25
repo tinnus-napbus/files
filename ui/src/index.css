@@ -34,4 +34,9 @@ body {
 
 .btn {
   @apply pill justify-center font-light w-min;
- }
+}
+
+.item {
+  @apply inline-flex items-center whitespace-nowrap bg-lite;
+  @apply h-[2em] w-full p-0.5 pl-6 rounded-full;
+}
