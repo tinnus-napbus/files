@@ -10,13 +10,13 @@ import {
 import api, { dir } from "/src/api";
 import Search from "/src/components/Search";
 import Upload from "/src/components/Upload";
-import { File, Folder, NewFolderIcon, UploadIcon } from "/src/icons";
+import { FileIcon, FolderIcon, NewFolderIcon, UploadIcon } from "/src/icons";
 
 function Dir({ name, path, perm }) {
   return (
     <Link className="h-[2em] w-full pill !px-6 bg-lite" to={path.join("/")}>
       <div className="inline-flex h-full items-center">
-        <Folder className="h-1/2 mr-[0.25em]" />
+        <FolderIcon className="h-1/2 mr-[0.25em]" />
         {name}
       </div>
     </Link>
@@ -36,7 +36,7 @@ function NewDir({ slugs, callback }) {
   return (
     <div className="h-[2em] w-full pill !px-6 bg-tint justify-between">
       <div className="inline-flex h-full items-center">
-        <Folder className="h-1/2 mr-[0.25em]" />
+        <FolderIcon className="h-1/2 mr-[0.25em]" />
         <form onSubmit={onSubmit}>
           <input
             className="bg-transparent focus:outline-0"
@@ -57,7 +57,7 @@ function Fil({ name, path, mime, date, size, perm }) {
   return (
     <div className="h-[2em] w-full pill !px-6 bg-lite">
       <div className="inline-flex h-full items-center">
-        <File className="h-1/2 mr-[0.25em]" />
+        <FileIcon className="h-1/2 mr-[0.25em]" />
         {name}
       </div>
     </div>
@@ -72,7 +72,7 @@ function UploadFile({ name, type, progress }) {
         style={{ width: `${progress}%` }}
       />
       <div className="z-10 inline-flex h-full items-center">
-        <File className="h-1/2 mr-[0.25em]" />
+        <FileIcon className="h-1/2 mr-[0.25em]" />
         {name}
       </div>
       <div className="z-10 flex justify-center items-center h-full aspect-square bg-white text-lg rounded-full">
