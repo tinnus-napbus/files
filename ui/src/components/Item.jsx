@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { download } from "/src/api";
 import {
   BinIcon,
   CopyIcon,
@@ -68,7 +69,7 @@ export default function Item({ name, path, mime, date, size, perm }) {
         </Button>
         <Button
           className="bg-white text-black"
-          onClick={() => console.log("download")}
+          onClick={() => download(path)}
           visible={hover}
         >
           <DownloadIcon className="h-1/2" />
