@@ -10,31 +10,6 @@ import {
   WebIcon,
 } from "/src/icons";
 
-function Wrapper({ children, path, mime, onMouseEnter, onMouseLeave }) {
-  if (!mime) {
-    return (
-      <Link
-        className="item justify-between"
-        to={path.join("/")}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        {children}
-      </Link>
-    );
-  } else {
-    return (
-      <div
-        className="item justify-between cursor-default"
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        {children}
-      </div>
-    );
-  }
-}
-
 function Button({ className, children, onClick, visible = true }) {
   return (
     <button
@@ -56,23 +31,29 @@ export default function Item({ name, path, mime, date, size, perm }) {
   const [hover, setHover] = useState(false);
 
   return (
-    <Wrapper
-      {...{
-        path,
-        mime,
-        onMouseEnter: () => setHover(true),
-        onMouseLeave: () => setHover(false),
-      }}
-    >
-      <div className="inline-flex flex-1 h-full items-center">
-        {(!mime && <FolderIcon className="h-1/2 mr-[0.25em]" />) || (
-          <FileIcon className="h-1/2 mr-[0.25em]" />
+    <div className="flex flex-col w-full p-0.5 pl-6 rounded-3xl bg-lite">
+      <div
+        className="flex items-center h-[2em] whitespace-nowrap w-full cursor-default space-x-1.5"
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+      >
+        {(mime && (
+          <div className="inline-flex flex-1 h-full items-center">
+            <FileIcon className="h-1/2 mr-6" />
+            {name}
+          </div>
+        )) || (
+          <Link
+            className="inline-flex flex-1 h-full items-center"
+            to={path.join("/")}
+          >
+            <FolderIcon className="h-1/2 mr-6" />
+            {name}
+          </Link>
         )}
-        {name}
-      </div>
-      <div className="flex h-full space-x-1.5">
+
         <Button
-          className={perm.pub ? "bg-brite text-white" : "bg-gray text-white"}
+          className={perm.pub ? "bg-brite text-white" : "bg-tint text-white"}
           onClick={() => console.log(perm)}
           visible={hover}
         >
@@ -106,6 +87,52 @@ export default function Item({ name, path, mime, date, size, perm }) {
           {expand ? <CrossIcon className="h-1/3" /> : "i"}
         </Button>
       </div>
-    </Wrapper>
+      {expand && (
+        <div className="pt-2.5 pb-6">
+          <table className="font-mono table-auto w-max">
+            <thead>
+              <tr>
+                <th className="underline font-normal text-start pr-24">
+                  Property
+                </th>
+                <th className="underline font-normal text-start pr-24">
+                  Value
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Name</td>
+                <td>{name}</td>
+              </tr>
+              <tr>
+                <td>Type</td>
+                <td>{mime || "folder"}</td>
+              </tr>
+              <tr>
+                <td>Path</td>
+                <td>{`~${window.ship}/${path.join("/")}`}</td>
+              </tr>
+              {size && (
+                <tr>
+                  <td>Size</td>
+                  <td>{size}</td>
+                </tr>
+              )}
+              <tr>
+                <td>Public</td>
+                <td>{perm.pub ? "Yes" : "No"}</td>
+              </tr>
+              {date && (
+                <tr>
+                  <td>Date</td>
+                  <td>{date}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }
