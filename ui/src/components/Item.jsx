@@ -60,13 +60,13 @@ export default function Item({ name, path, mime, date, size, perm }) {
         >
           <WebIcon className="h-1/2" />
         </Button>
-        <Button
-          className="bg-brite text-white"
-          onClick={() => console.log("copy")}
-          visible={hover}
-        >
-          <CopyIcon className="h-1/2" />
-        </Button>
+        {/* <Button */}
+        {/*   className="bg-brite text-white" */}
+        {/*   onClick={() => console.log("copy")} */}
+        {/*   visible={hover} */}
+        {/* > */}
+        {/*   <CopyIcon className="h-1/2" /> */}
+        {/* </Button> */}
         <Button
           className="bg-white text-black"
           onClick={() => download(path)}
