@@ -31,6 +31,8 @@ export default function Item({ name, path, mime, date, size, perm }) {
   const [expand, setExpand] = useState(false);
   const [hover, setHover] = useState(false);
 
+  const ts = new Date(date).toLocaleString()
+
   return (
     <div className="flex flex-col w-full p-0.5 pl-6 rounded-3xl bg-lite">
       <div
@@ -131,7 +133,7 @@ export default function Item({ name, path, mime, date, size, perm }) {
               {date && (
                 <tr>
                   <td>Date</td>
-                  <td>{date}</td>
+                  <td>{ts}</td>
                 </tr>
               )}
             </tbody>
