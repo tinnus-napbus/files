@@ -78,8 +78,8 @@ export function dir(slugs) {
     app: api.desk,
     mark: "files-do",
     json: { dir: { way: slugs, perm: false } },
-    onError: () => console.log("mkdir error"),
-    onSuccess: () => console.log("mkdir success"),
+    onError: () => console.log("dir error"),
+    onSuccess: () => console.log("dir success"),
   });
 }
 
