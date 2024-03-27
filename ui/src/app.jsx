@@ -80,6 +80,7 @@ function Path({ slugs }) {
 
 function Files() {
   const [fileTree, setFileTree] = useState({});
+  const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState(null);
   const [action, setAction] = useState(null);
 
@@ -151,9 +152,18 @@ function Files() {
           Files
         </h1>
         <div className="flex flex-col gap-1.5">
-          <button className="btn bg-white">All Files</button>
-          <button className="btn bg-white">Your Files</button>
-          <button className="btn bg-white">Public Files</button>
+          <button
+            className={filter === "all" ? "btn bg-brite" : "btn bg-white"}
+            onClick={() => setFilter("all")}
+          >
+            All Files
+          </button>
+          <button
+            className={filter === "pub" ? "btn bg-brite" : "btn bg-white"}
+            onClick={() => setFilter("pub")}
+          >
+            Public Files
+          </button>
         </div>
       </div>
       <div className="flex-1 flex flex-col gap-1.5">
