@@ -117,7 +117,11 @@ export default function Item({ name, path, mime, date, size, perm }) {
               {size && (
                 <tr>
                   <td>Size</td>
-                  <td>{size}</td>
+                  <td>
+                    {size >= 10e5
+                      ? `${(size / 10e5).toFixed(1)} MB`
+                      : `${(size / 10e2).toFixed(1)} KB`}
+                  </td>
                 </tr>
               )}
               <tr>
