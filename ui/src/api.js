@@ -93,4 +93,14 @@ export function del(slugs) {
   });
 }
 
+export function pub(slugs, isPublic) {
+  return api.poke({
+    app: api.desk,
+    mark: "files-do",
+    json: { pub: { way: slugs, perm: isPublic } },
+    onError: () => console.log("pub error"),
+    onSuccess: () => console.log("pub success"),
+  });
+}
+
 export default api;
