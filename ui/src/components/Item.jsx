@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { download, del } from "/src/api";
+import { download, del, pub } from "/src/api";
 import {
   BinIcon,
   CopyIcon,
@@ -57,7 +57,7 @@ export default function Item({ name, path, mime, date, size, perm }) {
 
         <Button
           className={perm.pub ? "bg-brite text-white" : "bg-tint text-white"}
-          onClick={() => console.log(perm)}
+          onClick={() => pub(path, !perm.pub)}
           visible={hover}
         >
           <WebIcon className="h-1/2" />
