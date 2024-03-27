@@ -29,14 +29,17 @@ export default function Upload({
 
     addUploadFiles(files);
 
-    files.forEach((file) => {
+    let i = 0;
+    for (const file of fileRef.current.files) {
+      const path =  files[i].path
       upload(
         slugs.concat(file.name),
         file,
-        (progress) => updateProgress(file.path, file.progress),
-        () => uploadDone(file.path)
+        (progress) => updateProgress(path, progress),
+        () => uploadDone(path)
       );
-    });
+      i++;
+    }
   };
 
   return (
