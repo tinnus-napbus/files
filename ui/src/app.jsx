@@ -123,16 +123,39 @@ function Files() {
     }
   };
 
+  const getParentsOfPublic = ({ path }) => {
+    let parents = [];
+    let curr = fileTree.dir;
+    path.forEach((s) => {
+      curr = curr.contents.find(({ dir }) => dir?.name === s)?.dir;
+      if (curr && !curr?.perm?.pub) {
+        parents.push(dissoc(assoc(curr, "type", "dir"), "contents"));
+      }
+    });
+    return parents;
+  };
+
+  const filterPub = (flatFiles) => {
+    const pubFiles = flatFiles.filter((o) => {
+      return filter !== "pub" || o.perm.pub;
+    });
+    const privateParents = new Set(pubFiles.map(getParentsOfPublic).flat());
+    return pubFiles.concat(...privateParents);
+  };
+
   const flatAllFiles = flattenFiles(fileTree);
-  const flatFiles = flatAllFiles.filter((o) => {
+  const flatFilteredFiles = (
+    filter === "pub" ? filterPub(flatAllFiles) : flatAllFiles
+  ).filter((o) => {
     return (
       o.path.length > 0 &&
       (query || o.path.slice(0, -1).join("/") === slugs.join("/")) &&
       (!query || o.name.includes(query || ""))
     );
   });
-  const flatFils = flatFiles.filter((o) => o.type === "fil");
-  const flatDirs = flatFiles.filter((o) => o.type === "dir");
+
+  const flatFils = flatFilteredFiles.filter((o) => o.type === "fil");
+  const flatDirs = flatFilteredFiles.filter((o) => o.type === "dir");
 
   useEffect(() => {
     const id = api.subscribe({
