@@ -10,4 +10,4 @@ git module base-dev:
     - main/mar
     - main/lib
     - main/sur
-  rev: f0ae78db55362a306ee3cedd78f6e7c3b228f219
+  rev: 1242fd2de356421e4c0c1e87659dfa04a7a95ca4
