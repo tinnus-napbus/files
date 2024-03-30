@@ -85,9 +85,36 @@
   ::
       %pub
     =.  files  (~(pro fi files) way.do perm.do)
-    =/  ways  (~(key fi files) way.do)
     =/  cards=(list card)
-      %+  turn  ways
+      %+  turn  (~(key fi files) way.do)
+      |=  =way
+      ^-  card
+      =/  =file  (~(got fi files) way)
+      =/  per=?  (~(per fi files) way)
+      (make-entry:hc way per mime.file)
+    :_  this
+    :_  cards
+    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+  ::
+      %mov
+    =/  deleted=(list card)
+      (turn (~(key fi files) from.do) delete-entry:hc)
+    =.  files  (need (~(mov fi files) from.do dest.do))
+    =/  added=(list card)
+      %+  turn  (~(key fi files) dest.do)
+      |=  =way
+      ^-  card
+      =/  =file  (~(got fi files) way)
+      =/  per=?  (~(per fi files) way)
+      (make-entry:hc way per mime.file)
+    :_  this
+    :_  (weld deleted added)
+    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+  ::
+      %cpy
+    =.  files  (need (~(cop fi files) from.do dest.do))
+    =/  cards=(list card)
+      %+  turn  (~(key fi files) dest.do)
       |=  =way
       ^-  card
       =/  =file  (~(got fi files) way)

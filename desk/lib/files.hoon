@@ -9,6 +9,8 @@
   :~  [%dir (ot way+(ar so) perm+(mu bo) ~)]
       [%del (ot way+(ar so) ~)]
       [%pub (ot way+(ar so) perm+(mu bo) ~)]
+      [%mov (ot from+(ar so) dest+(ar so) ~)]
+      [%cpy (ot from+(ar so) dest+(ar so) ~)]
   ==
 ::
 ++  en-json

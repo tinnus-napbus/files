@@ -3,6 +3,8 @@
   $%  [%dir =way perm=(unit ?)]
       [%del =way]
       [%pub =way perm=(unit ?)]
+      [%mov from=way dest=way]
+      [%cpy from=way dest=way]
   ==
 +$  did
   $%  ::  [%add =way =file]
@@ -22,7 +24,7 @@
 ::  are tracked, and files can't simultaneously be directories.
 ::
 +$  node
-  $~  [p=[%| p=|] [%| p=~]]
+  $~  [[exp=| pub=|] [%| p=~]]
   $:  p=pub
       $=  q
       $%  [%| p=(map @t node)]
@@ -86,6 +88,45 @@
     =/  kid  (~(get by p.q.fis) i.way)
     ?~  kid  ~
     $(fis u.kid, way t.way)
+  ::  put subtree
+  ::
+  ++  pid
+    |=  [=way =node]
+    ^-  (unit ^node)
+    ?:  &(=(~ way) =(& -.q.node))
+      ~
+    ?:  =(~ way)
+      ?:  =(& -.q.node)
+        ~
+      ?<  ?=(%& -.q.fis)
+      ?^  p.q.fis
+        ~
+      `node
+    =/  pat  (snip way)
+    =/  nam  (rear way)
+    =/  new
+      |-  ^-  (unit ^node)
+      ?:  ?=(%& -.q.fis)
+        ~
+      ?~  pat
+        ?:  (~(has by p.q.fis) nam)
+          ~
+        `fis(p.q (~(put by p.q.fis) nam node))
+      ?~  got=(~(get by p.q.fis) i.pat)
+        ~
+      =/  nu  $(pat t.pat, fis u.got)
+      ?~  nu
+        ~
+      `fis(p.q (~(put by p.q.fis) i.pat u.nu))
+    ?~  new
+      ~
+    =.  fis  u.new
+    =/  perm=(unit ?)
+      =/  =pub  p:(need (dip pat))
+      ?.  exp.pub
+        ~
+      `pub.pub
+    `(pro pat perm)
   ::  does node (file or dir) exist?
   ::
   ++  has
@@ -203,5 +244,24 @@
         out  ^$(pax (weld pax /[p.i.dir]), u.kid q.i.dir)
       ==
     |=(=way (weld w way))
+  ::  copy file or directory to new location
+  ::
+  ++  cop
+    |=  [a=way b=way]
+    ^-  (unit node)
+    ?~  got=(dip a)
+      ~
+    (pid b u.got)
+  ::  move file or directory to new location
+  ::
+  ++  mov
+    |=  [a=way b=way]
+    ^-  (unit node)
+    ?~  got=(dip a)
+      ~
+    ?~  pud=(pid b u.got)
+      ~
+    =.  fis  u.pud
+    `(lop a)
   --
 --
