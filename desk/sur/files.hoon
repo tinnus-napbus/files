@@ -12,7 +12,8 @@
       ::  [%pub =way =pub]
       [%all files=node]
   ==
-+$  file  [=mime date=@da]
++$  ftyp  (pair mite @u)
++$  file  [=ftyp date=@da]
 ::  public or private, where exp is explicit/implicit
 ::
 +$  pub  [exp=_| pub=_|]
@@ -30,6 +31,7 @@
       $%  [%| p=(map @t node)]
           [%& p=file]
   ==  ==
++$  blobs  (map @t @)
 ::  print a mime HTTP-style
 ::
 ++  print-mime

@@ -27,8 +27,8 @@
     :~  name+s+nam
         path+a+(turn (flop pax) |=(n=@t `json`s+n))
         perm+(pairs exp+b+exp.p.files.di pub+b+pub.p.files.di ~)
-        mime+s+(print-mime p.mime.p.q.files.di)
-        size+(numb p.q.mime.p.q.files.di)
+        mime+s+(print-mime p.ftyp.p.q.files.di)
+        size+(numb q.ftyp.p.q.files.di)
         date+(time date.p.q.files.di)
     ==
   %+  frond  %dir
