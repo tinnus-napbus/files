@@ -1,0 +1,9 @@
+:~  title+'Files'
+    info+'Manage and publish files.'
+    color+0xee.5432
+    glob-ames+~zod^0v0
+    base+'files'
+    version+[0 1 0]
+    website+'https://urbit.org'
+    license+'MIT'
+==
