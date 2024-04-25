@@ -1,5 +1,6 @@
 imports:
     base-dev: ./desk
+    landscape-dev: ./desk
 
 git module base-dev:
   url: https://github.com/urbit/urbit
@@ -11,3 +12,15 @@ git module base-dev:
     - main/lib
     - main/sur
   rev: 1242fd2de356421e4c0c1e87659dfa04a7a95ca4
+
+git module landscape-dev:
+  url: https://github.com/tloncorp/landscape
+  export: desk-dev
+  pick:
+    - desk-dev/lib
+    - desk-dev/sur
+    - desk-dev/mar
+  drop:
+    - desk-dev/lib/mip.hoon
+  rev: 24b4f41a1658219deb34d97ef938c2b26cdb75da
+
