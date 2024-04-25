@@ -4,7 +4,7 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 files=node =blobs]
++$  state-0  [%0 files=node]
 +$  card  card:agent:gall
 --
 ::
@@ -47,10 +47,8 @@
       %+  fall
         (get-header:http 'content-type' header-list.request.q.req)
       'application/octet-stream'
-    =/  =octs  u.body.request.q.req
-    =/  data=@  +.octs
-    =/  =ftyp  [mite -.octs]
-    =/  fil=file  [ftyp now.bowl]
+    =/  =mime  [mite u.body.request.q.req]
+    =/  fil=file  [mime now.bowl]
     =/  fis=(unit node)  (~(put fi files) way ~ `fil)
     ?~  fis
       :_  this
@@ -59,9 +57,9 @@
         'Cannot add file at location'
       ==
     =/  per=?  (~(per fi u.fis) way)
-    :_  this(files u.fis, blobs (~(put by blobs) (make-url way) data))
+    :_  this(files u.fis)
     :*  [%give %fact ~[/did] files-did+!>(`did`[%all u.fis])]
-        (make-entry:hc way per ftyp data)
+        (make-entry:hc way per mime)
         %:  response:hc
           p.req  201
           ['Location' (make-url:hc way)]~
@@ -81,13 +79,7 @@
     =/  cards=(list card)
       (turn ways delete-entry:hc)
     =.  files  (~(lop fi files) way.do)
-    :_  %=  this
-          blobs
-          %+  roll
-            ways
-          |=  [=way b=_blobs]
-            (~(del by b) (make-url way))
-        ==
+    :_  this
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ::
@@ -99,86 +91,36 @@
       ^-  card
       =/  =file  (~(got fi files) way)
       =/  per=?  (~(per fi files) way)
-      (make-entry:hc way per ftyp.file (~(got by blobs.this) (make-url way)))
+      (make-entry:hc way per mime.file)
     :_  this
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ::
       %mov
-    =/  froms=(list way)
-      (~(key fi files) from.do)
-    =/  dests=(list way)
-      %+  turn
-        froms
-      |=  w=way
-      =/  rem=way
-        (oust [0 (lent from.do)] w)
-      (weld rem dest.do)
-    =/  ways=(list (pair way way))
-      %+  spun
-      dests
-      |=([dest=way i=@] [[(snag i froms) dest] +(i)])
     =/  deleted=(list card)
-      (turn froms delete-entry:hc)
+      (turn (~(key fi files) from.do) delete-entry:hc)
     =.  files  (need (~(mov fi files) from.do dest.do))
     =/  added=(list card)
-      %+  turn  ways
-      |=  [from=way dest=way]
+      %+  turn  (~(key fi files) dest.do)
+      |=  =way
       ^-  card
-      =/  =file  (~(got fi files) dest)
-      =/  per=?  (~(per fi files) dest)
-      (make-entry:hc dest per ftyp.file (~(got by blobs.this) (make-url from)))
-    :_  %=  this
-          blobs
-          %+  roll
-            ways
-          |=  [[from=way dest=way] b=_blobs]
-            %-  %~  del
-                  by
-                %+  ~(put by b)
-                  (make-url dest)
-                (~(got by b) (make-url from))
-            (make-url from)
-        ==
+      =/  =file  (~(got fi files) way)
+      =/  per=?  (~(per fi files) way)
+      (make-entry:hc way per mime.file)
+    :_  this
     :_  (weld deleted added)
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ::
       %cpy
     =.  files  (need (~(cop fi files) from.do dest.do))
-    =/  froms=(list way)
-      (~(key fi files) from.do)
-    =/  dests=(list way)
-      %+  turn
-        froms
-      |=  w=way
-      =/  rem=way
-        (oust [0 (lent from.do)] w)
-      (weld rem dest.do)
-    =/  ways=(list (pair way way))
-      %+  spun
-      dests
-      |=([dest=way i=@] [[(snag i froms) dest] +(i)])
     =/  cards=(list card)
-      %+  turn  ways
-      |=  [from=way dest=way]
+      %+  turn  (~(key fi files) dest.do)
+      |=  =way
       ^-  card
-      =/  =file  (~(got fi files) dest)
-      =/  per=?  (~(per fi files) dest)
-      %:  make-entry:hc
-        dest
-        per
-        ftyp.file
-        (~(got by blobs.this) (make-url from))
-      ==
-    :_  %=  this
-          blobs
-        %+  roll
-          ways
-        |=  [[from=way dest=way] b=_blobs]
-          %+  ~(put by b)
-            (make-url dest)
-          (~(got by b) (make-url from))
-        ==
+      =/  =file  (~(got fi files) way)
+      =/  per=?  (~(per fi files) way)
+      (make-entry:hc way per mime.file)
+    :_  this
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all files])]
   ==
@@ -218,7 +160,7 @@
         files
       |-  ^-  node
       ?:  ?=(%& -.q.files)
-        files
+        files(q.q.mime.p.q 1.337)
       files(p.q (~(run by p.q.files) |=(=node ^$(files node))))
     ==
   ==
@@ -277,14 +219,14 @@
 (turn way (cury scot %t))
 ::
 ++  make-entry
-  |=  [=way pub=? =ftyp data=@]
+  |=  [=way pub=? =mime]
   ^-  card
   =/  hed=header-list:http
-    :~  ['Content-Type' (print-mime p.ftyp)]
+    :~  ['Content-Type' (print-mime p.mime)]
         ['Content-Disposition' (crip "inline;filename=\"{(filename way)}\"")]
     ==
   =/  =cache-entry:eyre
-    [!pub %payload [200 hed] `[q.ftyp data]]
+    [!pub %payload [200 hed] `q.mime]
   [%pass (way-to-path way) %arvo %e %set-response (make-url way) `cache-entry]
 ::
 ++  delete-entry
@@ -311,3 +253,4 @@
     hed
   (some (as-octs:mimes:html msg))
 --
+
