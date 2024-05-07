@@ -49,6 +49,7 @@
 ::  $node engine
 ::
 ++  fi
+  |=  now=@da
   |_  fis=node
   ::  delete subtree
   ::
@@ -94,6 +95,14 @@
     =/  kid  (~(get by p.q.fis) i.way)
     ?~  kid  ~
     $(fis u.kid, way t.way)
+  ::  update tree timestamps to now
+  ::
+  ++  tim
+    |=  nud=node
+    ^-  node
+    ?:  ?=(%& -.q.nud)
+      nud(time.p.q now)
+    nud(p.q (~(run by p.q.nud) tim))
   ::  put subtree
   ::
   ++  pid
@@ -101,6 +110,7 @@
     ^-  (unit ^node)
     ?:  &(=(~ way) =(& -.q.node))
       ~
+    =.  node  (tim node)
     ?:  =(~ way)
       ?:  =(& -.q.node)
         ~

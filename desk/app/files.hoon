@@ -50,14 +50,14 @@
     =/  =octs  u.body.request.q.req
     =/  hash=@uvH  (shay octs)
     =/  fil=file  [mite now.bowl p.octs & hash]
-    =/  fis=(unit node)  (~(put fi dex) way ~ `fil)
+    =/  fis=(unit node)  (~(put (fi now.bowl) dex) way ~ `fil)
     ?~  fis
       :_  this
       %:  response:hc
         p.req  422  ~
         'Cannot add file at location'
       ==
-    =/  per=?  (~(per fi u.fis) way)
+    =/  per=?  (~(per (fi now.bowl) u.fis) way)
     =.  dat
       ?~  got=(~(get by dat) hash)
         (~(put by dat) hash (~(put in *(set ^way)) way) octs)
@@ -75,17 +75,17 @@
   =+  !<(=do vase)
   ?-    -.do
       %dir
-    =.  dex  (need (~(put fi dex) way.do perm.do ~))
+    =.  dex  (need (~(put (fi now.bowl) dex) way.do perm.do ~))
     :_  this
     [%give %fact ~[/did] files-did+!>(`did`[%all dex])]~
   ::
       %del
-    =/  ways  (~(key fi dex) way.do)
+    =/  ways  (~(key (fi now.bowl) dex) way.do)
     =.  dat
       |-
       ?~  ways
         dat
-      ?~  fu=(~(get fi dex) i.ways)
+      ?~  fu=(~(get (fi now.bowl) dex) i.ways)
         $(ways t.ways)
       ?.  have.u.fu  $(ways t.ways)
       ?~  du=(~(get by dat) hash.u.fu)
@@ -96,20 +96,20 @@
       $(ways t.ways, dat (~(put by dat) hash.u.fu u.du))
     =/  cards=(list card)
       (turn ways delete-entry:hc)
-    =.  dex  (~(lop fi dex) way.do)
+    =.  dex  (~(lop (fi now.bowl) dex) way.do)
     :_  this
     :_  cards
     [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ::
       %pub
-    =.  dex  (~(pro fi dex) way.do perm.do)
+    =.  dex  (~(pro (fi now.bowl) dex) way.do perm.do)
     ::  generate new cache entry cards
     =/  cards=(list card)
-      %+  turn  (~(key fi dex) way.do)
+      %+  turn  (~(key (fi now.bowl) dex) way.do)
       |=  =way
       ^-  card
-      =/  =file  (~(got fi dex) way)
-      =/  per=?  (~(per fi dex) way)
+      =/  =file  (~(got (fi now.bowl) dex) way)
+      =/  per=?  (~(per (fi now.bowl) dex) way)
       =/  =datum  (~(got by dat) hash.file)
       (make-entry:hc way per mite.file octs.datum)
     :_  this
@@ -117,7 +117,7 @@
     [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ::
       %mov
-    =/  froms  (~(key fi dex) from.do)
+    =/  froms  (~(key (fi now.bowl) dex) from.do)
     ::  produce list of new/old paths and their hashes
     =/  change=(list [from=way to=way hash=@uvH])
       =/  len  (lent dest.do)
@@ -125,8 +125,8 @@
       |=  =way
       :+  way
         (weld dest.do (slag len way))
-      hash:(~(got fi dex) way)
-    =.  dex  (need (~(mov fi dex) from.do dest.do))
+      hash:(~(got (fi now.bowl) dex) way)
+    =.  dex  (need (~(mov (fi now.bowl) dex) from.do dest.do))
     =/  deleted=(list card)  (turn froms delete-entry:hc)
     ::  swap path references in data map
     =.  dat
@@ -142,11 +142,11 @@
         dat  (~(put by dat) hash.i.change u.got)
       ==
     =/  added=(list card)
-      %+  turn  (~(key fi dex) dest.do)
+      %+  turn  (~(key (fi now.bowl) dex) dest.do)
       |=  =way
       ^-  card
-      =/  =file  (~(got fi dex) way)
-      =/  per=?  (~(per fi dex) way)
+      =/  =file  (~(got (fi now.bowl) dex) way)
+      =/  per=?  (~(per (fi now.bowl) dex) way)
       =/  =datum  (~(got by dat) hash.file)
       (make-entry:hc way per mite.file octs.datum)
     :_  this
@@ -154,14 +154,14 @@
     [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ::
       %cpy
-    =.  dex  (need (~(cop fi dex) from.do dest.do))
-    =/  tos  (~(key fi dex) dest.do)
+    =.  dex  (need (~(cop (fi now.bowl) dex) from.do dest.do))
+    =/  tos  (~(key (fi now.bowl) dex) dest.do)
     ::  generate list of new paths and their hashes
     =/  change=(list [to=way hash=@uvH])
       %+  turn  tos
       |=  =way
       :-  way
-      hash:(~(got fi dex) way)
+      hash:(~(got (fi now.bowl) dex) way)
     ::  add new paths to data reference sets
     =.  dat
       |-
@@ -179,8 +179,8 @@
       %+  turn  tos
       |=  =way
       ^-  card
-      =/  =file  (~(got fi dex) way)
-      =/  per=?  (~(per fi dex) way)
+      =/  =file  (~(got (fi now.bowl) dex) way)
+      =/  per=?  (~(per (fi now.bowl) dex) way)
       =/  =datum  (~(got by dat) hash.file)
       (make-entry:hc way per mite.file octs.datum)
     :_  this
