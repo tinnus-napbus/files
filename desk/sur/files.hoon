@@ -12,14 +12,19 @@
       ::  [%pub =way =pub]
       [%all files=node]
   ==
-+$  ftyp  (pair mite @u)
-+$  file  [=ftyp date=@da]
++$  file  [=mite time=@da size=@ud have=? hash=@uvH]
 ::  public or private, where exp is explicit/implicit
 ::
 +$  pub  [exp=_| pub=_|]
 ::  path to file or directory
 ::
 +$  way  (list @t)
+::  map from hashes to blobs & refcounts
+::
++$  data  (map @uvH datum)
+::  refcount and blob
+::
++$  datum  [refs=(set way) =octs]
 ::  file structure with permissions. Like an axal but characters in
 ::  paths aren't limited to @tas, empty folders are allowed, permissions
 ::  are tracked, and files can't simultaneously be directories.
@@ -31,7 +36,6 @@
       $%  [%| p=(map @t node)]
           [%& p=file]
   ==  ==
-+$  blobs  (map @t @)
 ::  print a mime HTTP-style
 ::
 ++  print-mime

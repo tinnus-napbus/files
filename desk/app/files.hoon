@@ -4,7 +4,7 @@
 +$  versioned-state
   $%  state-0
   ==
-+$  state-0  [%0 files=node =blobs]
++$  state-0  [%0 dex=node dat=data]
 +$  card  card:agent:gall
 --
 ::
@@ -48,10 +48,9 @@
         (get-header:http 'content-type' header-list.request.q.req)
       'application/octet-stream'
     =/  =octs  u.body.request.q.req
-    =/  data=@  +.octs
-    =/  =ftyp  [mite -.octs]
-    =/  fil=file  [ftyp now.bowl]
-    =/  fis=(unit node)  (~(put fi files) way ~ `fil)
+    =/  hash=@uvH  (shay octs)
+    =/  fil=file  [mite now.bowl p.octs & hash]
+    =/  fis=(unit node)  (~(put fi dex) way ~ `fil)
     ?~  fis
       :_  this
       %:  response:hc
@@ -59,9 +58,13 @@
         'Cannot add file at location'
       ==
     =/  per=?  (~(per fi u.fis) way)
-    :_  this(files u.fis, blobs (~(put by blobs) (make-url way) data))
+    =.  dat
+      ?~  got=(~(get by dat) hash)
+        (~(put by dat) hash (~(put in *(set ^way)) way) octs)
+      (~(put by dat) hash u.got(refs (~(put in refs.u.got) way)))
+    :_  this(dex u.fis)
     :*  [%give %fact ~[/did] files-did+!>(`did`[%all u.fis])]
-        (make-entry:hc way per ftyp data)
+        (make-entry:hc way per mite octs)
         %:  response:hc
           p.req  201
           ['Location' (make-url:hc way)]~
@@ -72,115 +75,117 @@
   =+  !<(=do vase)
   ?-    -.do
       %dir
-    =.  files  (need (~(put fi files) way.do perm.do ~))
+    =.  dex  (need (~(put fi dex) way.do perm.do ~))
     :_  this
-    [%give %fact ~[/did] files-did+!>(`did`[%all files])]~
+    [%give %fact ~[/did] files-did+!>(`did`[%all dex])]~
   ::
       %del
-    =/  ways  (~(key fi files) way.do)
+    =/  ways  (~(key fi dex) way.do)
+    =.  dat
+      |-
+      ?~  ways
+        dat
+      ?~  fu=(~(get fi dex) i.ways)
+        $(ways t.ways)
+      ?.  have.u.fu  $(ways t.ways)
+      ?~  du=(~(get by dat) hash.u.fu)
+        $(ways t.ways)
+      =.  refs.u.du  (~(del in refs.u.du) i.ways)
+      ?~  refs.u.du
+        $(ways t.ways, dat (~(del by dat) hash.u.fu))
+      $(ways t.ways, dat (~(put by dat) hash.u.fu u.du))
     =/  cards=(list card)
       (turn ways delete-entry:hc)
-    =.  files  (~(lop fi files) way.do)
-    :_  %=  this
-          blobs
-          %+  roll
-            ways
-          |=  [=way b=_blobs]
-            (~(del by b) (make-url way))
-        ==
-    :_  cards
-    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
-  ::
-      %pub
-    =.  files  (~(pro fi files) way.do perm.do)
-    =/  cards=(list card)
-      %+  turn  (~(key fi files) way.do)
-      |=  =way
-      ^-  card
-      =/  =file  (~(got fi files) way)
-      =/  per=?  (~(per fi files) way)
-      (make-entry:hc way per ftyp.file (~(got by blobs.this) (make-url way)))
+    =.  dex  (~(lop fi dex) way.do)
     :_  this
     :_  cards
-    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+    [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
+  ::
+      %pub
+    =.  dex  (~(pro fi dex) way.do perm.do)
+    ::  generate new cache entry cards
+    =/  cards=(list card)
+      %+  turn  (~(key fi dex) way.do)
+      |=  =way
+      ^-  card
+      =/  =file  (~(got fi dex) way)
+      =/  per=?  (~(per fi dex) way)
+      =/  =datum  (~(got by dat) hash.file)
+      (make-entry:hc way per mite.file octs.datum)
+    :_  this
+    :_  cards
+    [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ::
       %mov
-    =/  froms=(list way)
-      (~(key fi files) from.do)
-    =/  dests=(list way)
-      %+  turn
-        froms
-      |=  w=way
-      =/  rem=way
-        (oust [0 (lent from.do)] w)
-      (weld rem dest.do)
-    =/  ways=(list (pair way way))
-      %+  spun
-      dests
-      |=([dest=way i=@] [[(snag i froms) dest] +(i)])
-    =/  deleted=(list card)
-      (turn froms delete-entry:hc)
-    =.  files  (need (~(mov fi files) from.do dest.do))
+    =/  froms  (~(key fi dex) from.do)
+    ::  produce list of new/old paths and their hashes
+    =/  change=(list [from=way to=way hash=@uvH])
+      =/  len  (lent dest.do)
+      %+  turn  froms
+      |=  =way
+      :+  way
+        (weld dest.do (slag len way))
+      hash:(~(got fi dex) way)
+    =.  dex  (need (~(mov fi dex) from.do dest.do))
+    =/  deleted=(list card)  (turn froms delete-entry:hc)
+    ::  swap path references in data map
+    =.  dat
+      |-
+      ?~  change
+        dat
+      ?~  got=(~(get by dat) hash.i.change)
+        $(change t.change)
+      =.  refs.u.got  (~(del in refs.u.got) from.i.change)
+      =.  refs.u.got  (~(put in refs.u.got) to.i.change)
+      %=  $
+        change  t.change
+        dat  (~(put by dat) hash.i.change u.got)
+      ==
     =/  added=(list card)
-      %+  turn  ways
-      |=  [from=way dest=way]
+      %+  turn  (~(key fi dex) dest.do)
+      |=  =way
       ^-  card
-      =/  =file  (~(got fi files) dest)
-      =/  per=?  (~(per fi files) dest)
-      (make-entry:hc dest per ftyp.file (~(got by blobs.this) (make-url from)))
-    :_  %=  this
-          blobs
-          %+  roll
-            ways
-          |=  [[from=way dest=way] b=_blobs]
-            %-  %~  del
-                  by
-                %+  ~(put by b)
-                  (make-url dest)
-                (~(got by b) (make-url from))
-            (make-url from)
-        ==
+      =/  =file  (~(got fi dex) way)
+      =/  per=?  (~(per fi dex) way)
+      =/  =datum  (~(got by dat) hash.file)
+      (make-entry:hc way per mite.file octs.datum)
+    :_  this
     :_  (weld deleted added)
-    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+    [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ::
       %cpy
-    =.  files  (need (~(cop fi files) from.do dest.do))
-    =/  froms=(list way)
-      (~(key fi files) from.do)
-    =/  dests=(list way)
-      %+  turn
-        froms
-      |=  w=way
-      =/  rem=way
-        (oust [0 (lent from.do)] w)
-      (weld rem dest.do)
-    =/  ways=(list (pair way way))
-      %+  spun
-      dests
-      |=([dest=way i=@] [[(snag i froms) dest] +(i)])
-    =/  cards=(list card)
-      %+  turn  ways
-      |=  [from=way dest=way]
-      ^-  card
-      =/  =file  (~(got fi files) dest)
-      =/  per=?  (~(per fi files) dest)
-      %:  make-entry:hc
-        dest
-        per
-        ftyp.file
-        (~(got by blobs.this) (make-url from))
+    =.  dex  (need (~(cop fi dex) from.do dest.do))
+    =/  tos  (~(key fi dex) dest.do)
+    ::  generate list of new paths and their hashes
+    =/  change=(list [to=way hash=@uvH])
+      %+  turn  tos
+      |=  =way
+      :-  way
+      hash:(~(got fi dex) way)
+    ::  add new paths to data reference sets
+    =.  dat
+      |-
+      ?~  change
+        dat
+      ?~  got=(~(get by dat) hash.i.change)
+        $(change t.change)
+      =.  refs.u.got  (~(put in refs.u.got) to.i.change)
+      %=  $
+        change  t.change
+        dat  (~(put by dat) hash.i.change u.got)
       ==
-    :_  %=  this
-          blobs
-        %+  roll
-          ways
-        |=  [[from=way dest=way] b=_blobs]
-          %+  ~(put by b)
-            (make-url dest)
-          (~(got by b) (make-url from))
-        ==
+    ::  new cache entries for copies
+    =/  cards=(list card)
+      %+  turn  tos
+      |=  =way
+      ^-  card
+      =/  =file  (~(got fi dex) way)
+      =/  per=?  (~(per fi dex) way)
+      =/  =datum  (~(got by dat) hash.file)
+      (make-entry:hc way per mite.file octs.datum)
+    :_  this
     :_  cards
-    [%give %fact ~[/did] files-did+!>(`did`[%all files])]
+    [%give %fact ~[/did] files-did+!>(`did`[%all dex])]
   ==
 ::
 ++  on-arvo
@@ -204,7 +209,7 @@
   ::
       [%did ~]
     :_  this
-    [%give %fact ~ files-did+!>(`did`[%all files])]~
+    [%give %fact ~ files-did+!>(`did`[%all dex])]~
   ==
 ::
 ++  on-peek
@@ -213,16 +218,8 @@
   ?+    path  (on-peek:def path)
       [%x %dbug %state ~]
     :^  ~  ~  %noun
-    !>
-    %=  state
-        files
-      |-  ^-  node
-      ?:  ?=(%& -.q.files)
-        files
-      files(p.q (~(run by p.q.files) |=(=node ^$(files node))))
-    ==
+    !>(state(dat (~(run by dat) |=(=datum datum(q.octs 1.337)))))
   ==
-::
 ++  on-agent  on-agent:def
 ++  on-leave  on-leave:def
 ++  on-fail   on-fail:def
@@ -277,14 +274,14 @@
 (turn way (cury scot %t))
 ::
 ++  make-entry
-  |=  [=way pub=? =ftyp data=@]
+  |=  [=way pub=? =mime]
   ^-  card
   =/  hed=header-list:http
-    :~  ['Content-Type' (print-mime p.ftyp)]
+    :~  ['Content-Type' (print-mime p.mime)]
         ['Content-Disposition' (crip "inline;filename=\"{(filename way)}\"")]
     ==
   =/  =cache-entry:eyre
-    [!pub %payload [200 hed] `[q.ftyp data]]
+    [!pub %payload [200 hed] `q.mime]
   [%pass (way-to-path way) %arvo %e %set-response (make-url way) `cache-entry]
 ::
 ++  delete-entry
@@ -311,3 +308,4 @@
     hed
   (some (as-octs:mimes:html msg))
 --
+
